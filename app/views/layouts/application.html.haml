@@ -7,5 +7,6 @@
     = csrf_meta_tags
 
   %body
+    %p(id='notice')= flash[:notice]
+    %p(id='error')= flash[:error]
     = yield
-    
