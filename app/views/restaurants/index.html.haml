@@ -2,9 +2,11 @@
   - @restaurants.each do |restaurant|
     %h2= link_to restaurant.name, restaurant_path(restaurant)
     %p= restaurant.description
-    %p= link_to "Edit #{restaurant.name}", edit_restaurant_path(restaurant)
-    %p= link_to "Delete #{restaurant.name}", restaurant_path(restaurant), method: :delete
-    %p= link_to "Review #{restaurant.name}", new_restaurant_review_path(restaurant)
+    - if restaurant.user == current_user
+      %p= link_to "Edit #{restaurant.name}", edit_restaurant_path(restaurant)
+      %p= link_to "Delete #{restaurant.name}", restaurant_path(restaurant), method: :delete
+    - if current_user && !current_user.has_reviewed?(restaurant)
+      %p= link_to "Review #{restaurant.name}", new_restaurant_review_path(restaurant)
     %h2 Reviews
     - restaurant.reviews.each do |review|
       %p= review.thoughts

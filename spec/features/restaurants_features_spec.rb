@@ -10,16 +10,15 @@ feature 'restaurants' do
     end
   end
 
-  context "signed up" do
+  context "signed in" do
 
     before do
       @user = User.new(email: "mike@test.com", password: "abc123")
       @restaurant = Restaurant.create(name:'KFC', description: 'Deep fried goodness', id: 1, user: @user)
-      sign_up
+      sign_in_user_two
     end
 
     context 'restaurants have been added' do
-
       scenario 'display restaurants' do
         visit '/restaurants'
         expect(page).to have_content('KFC')
@@ -46,9 +45,8 @@ feature 'restaurants' do
     end
 
     context 'editing restaurants' do
-      scenario 'let a user edit a restaurant' do
+      scenario 'let a user edit a restaurant that they own' do
         visit '/restaurants'
-
         click_link 'Edit KFC'
         fill_in 'Name', with: 'Kentucky Fried Chicken'
         fill_in 'Description', with: 'Deep fried goodness!!'
@@ -57,6 +55,12 @@ feature 'restaurants' do
         expect(page).to have_content 'Kentucky Fried Chicken'
         expect(page).to have_content 'Deep fried goodness!!'
         expect(current_path).to eq '/restaurants/1'
+      end
+      scenario "stops a user editing a restaurant they don't own" do
+        visit '/restaurants'
+        click_link('Sign out')
+        sign_up_user_one
+        expect(page).not_to have_link('Edit KFC')
       end
     end
 
@@ -67,6 +71,12 @@ feature 'restaurants' do
         click_link 'Delete KFC'
         expect(page).not_to have_content 'KFC'
         expect(page).to have_content 'Restaurant deleted successfully'
+      end
+      scenario "stops a user deleting a restaurant they don't own" do
+        visit '/restaurants'
+        click_link('Sign out')
+        sign_up_user_one
+        expect(page).not_to have_link('Delete KFC')
       end
     end
 

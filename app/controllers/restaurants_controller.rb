@@ -30,13 +30,17 @@ class RestaurantsController < ApplicationController
 
   def update #PATCH/PUT
     @restaurant = Restaurant.find(params[:id])
-    @restaurant.update(restaurant_params)
+    if @restaurant.user == current_user
+      @restaurant.update(restaurant_params)
+    end
     redirect_to restaurants_path
   end
 
   def destroy
     @restaurant = Restaurant.find(params[:id])
-    @restaurant.destroy
+    if @restaurant.user == current_user
+      @restaurant.destroy
+    end
     redirect_to restaurants_path, :flash => { :notice => "Restaurant deleted successfully" }
   end
 

@@ -2,13 +2,13 @@ require 'rails_helper'
 
 feature 'reviewing' do
   before do
-    @user = User.create(email: 'mike@test.com', password: 'abc123')
-    Restaurant.create(name: 'KFC', user: @user)
-    sign_up
+    user_two_create_restaurant
+    sign_up_user_one
   end
 
   scenario 'allows users to leave a review using a form' do
      visit '/restaurants'
+     save_and_open_page
      click_link 'Review KFC'
      fill_in "Thoughts", with: "so so"
      select '3', from: 'Rating'
