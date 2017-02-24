@@ -8,7 +8,6 @@ feature 'reviewing' do
 
   scenario 'allows users to leave a review using a form' do
      visit '/restaurants'
-     save_and_open_page
      click_link 'Review KFC'
      fill_in "Thoughts", with: "so so"
      select '3', from: 'Rating'
@@ -16,5 +15,14 @@ feature 'reviewing' do
 
      expect(current_path).to eq '/restaurants'
      expect(page).to have_content('so so')
+  end
+
+  scenario "doesn't allow user to leave a review if they've already reviewed a restaurant" do
+    visit '/restaurants'
+    click_link 'Review KFC'
+    fill_in "Thoughts", with: "so so"
+    select '3', from: 'Rating'
+    click_button 'Leave Review'
+    expect(page).not_to have_link('Review KFC')
   end
 end
